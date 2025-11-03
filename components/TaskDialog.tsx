@@ -9,7 +9,7 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { X, Calendar } from "lucide-react-native";
+import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Task } from "@/types/types";
 import { createTask, updateTask } from "@/services/TaskService";
@@ -117,7 +117,7 @@ const TaskDialog: React.FC<TaskDialogProps> = ({
               {task ? "Edit Task" : "Add Task"}
             </Text>
             <TouchableOpacity onPress={onClose}>
-              <X color="#c1c1c1" size={24} />
+              <Ionicons name="close" color="#c1c1c1" size={24} />
             </TouchableOpacity>
           </View>
 
@@ -167,7 +167,12 @@ const TaskDialog: React.FC<TaskDialogProps> = ({
               className="flex-row items-center p-3 mt-1"
               onPress={() => setShowDatePicker(true)}
             >
-              <Calendar color="#c1c1c1" size={20} className="mr-2" />
+              <Ionicons
+                name="calendar-outline"
+                color="#c1c1c1"
+                size={20}
+                style={{ marginRight: 8 }}
+              />
               <Text
                 style={{ color: dueDate ? "#fff" : "#888" }}
                 className="flex-1"

@@ -15,10 +15,10 @@ function resolveBaseUrl(): string {
   const hostUri = Constants.expoConfig?.hostUri;
   if (hostUri) {
     const host = hostUri.split(":")[0];
-    return `http://${host}:5139`;
+    return `http://172.20.10.3:5139`;
   }
 
-  return "http://localhost:5139";
+  return "http://172.20.10.3:5139";
 }
 
 export const API_CONFIG = {

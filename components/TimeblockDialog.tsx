@@ -9,7 +9,7 @@ import {
   Alert,
   Switch,
 } from "react-native";
-import { X, Calendar, Clock } from "lucide-react-native";
+import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TimeBlock } from "@/types/types";
 
@@ -208,7 +208,7 @@ const TimeblockDialog: React.FC<TimeblockDialogProps> = ({
               {timeBlock ? "Update Activity" : "Add Activity"}
             </Text>
             <TouchableOpacity onPress={onClose}>
-              <X color="#c1c1c1" size={24} />
+              <Ionicons name="close" color="#c1c1c1" size={24} />
             </TouchableOpacity>
           </View>
 
@@ -239,7 +239,12 @@ const TimeblockDialog: React.FC<TimeblockDialogProps> = ({
               className="flex-row items-center p-3 mt-1 gap-2"
               onPress={() => setShowDatePicker(true)}
             >
-              <Calendar color="#c1c1c1" size={20} className="mr-2" />
+              <Ionicons
+                name="calendar-outline"
+                color="#c1c1c1"
+                size={20}
+                style={{ marginRight: 8 }}
+              />
               <Text
                 style={{ color: date ? "#fff" : "#888" }}
                 className="flex-1"
@@ -267,7 +272,12 @@ const TimeblockDialog: React.FC<TimeblockDialogProps> = ({
                 className="flex-row items-center p-3 mt-1 gap-2"
                 onPress={() => setShowStartTimePicker(true)}
               >
-                <Clock color="#c1c1c1" size={20} className="mr-2" />
+                <Ionicons
+                  name="time-outline"
+                  color="#c1c1c1"
+                  size={20}
+                  style={{ marginRight: 8 }}
+                />
                 <Text
                   style={{ color: startTime ? "#fff" : "#888" }}
                   className="flex-1"
@@ -294,7 +304,12 @@ const TimeblockDialog: React.FC<TimeblockDialogProps> = ({
                 className="flex-row items-center p-3 mt-1 gap-2"
                 onPress={() => setShowEndTimePicker(true)}
               >
-                <Clock color="#c1c1c1" size={20} className="mr-2" />
+                <Ionicons
+                  name="time-outline"
+                  color="#c1c1c1"
+                  size={20}
+                  style={{ marginRight: 8 }}
+                />
                 <Text
                   style={{ color: endTime ? "#fff" : "#888" }}
                   className="flex-1"

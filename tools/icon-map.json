@@ -1,0 +1,18 @@
+{
+  "House": "home-outline",
+  "Calendar": "calendar-outline",
+  "Plus": "add",
+  "CheckCircle": "checkmark-circle-outline",
+  "Circle": "ellipse-outline",
+  "Trash2": "trash-outline",
+  "X": "close",
+  "ChevronLeft": "chevron-back",
+  "ChevronRight": "chevron-forward",
+  "BarChart": "bar-chart-outline",
+  "MoveLeft": "arrow-back",
+  "MoveRight": "arrow-forward",
+  "Clock": "time-outline",
+  "Target": "locate-outline",
+  "UsersRound": "people-outline",
+  "CircleUserRound": "person-circle-outline"
+}
