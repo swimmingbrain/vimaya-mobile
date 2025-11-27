@@ -1,19 +1,30 @@
 import React, { useState, useCallback } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
-import { Plus, CheckCircle, Circle, Trash2 } from "lucide-react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { getAllTasks, deleteTask, updateTask } from "@/services/TaskService";
 import { Task } from "@/types/types";
 import TaskDialog from "./TaskDialog";
+import { useAuth } from "@/contexts/AuthContext";
 
 const TaskList = () => {
+  const { isAuthenticated } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"open" | "completed">("open");
   const [dialogVisible, setDialogVisible] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
+    if (!isAuthenticated) {
+      return;
+    }
     try {
       const data = await getAllTasks();
       setTasks(data);
@@ -25,13 +36,18 @@ const TaskList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAuthenticated]);
 
   useFocusEffect(
     useCallback(() => {
+      if (!isAuthenticated) {
+        setTasks([]);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       fetchTasks();
-    }, [])
+    }, [fetchTasks, isAuthenticated])
   );
 
   const openTasks = tasks.filter((t) => !t.isCompleted);
@@ -139,7 +155,7 @@ const TaskList = () => {
           }}
           className="flex flex-row items-center justify-end mb-2"
         >
-          <Plus color="#c1c1c1" size={20} />
+          <Ionicons name="add" color="#c1c1c1" size={20} />
           <Text className="text-secondary"> Add Task</Text>
         </TouchableOpacity>
       )}
@@ -159,7 +175,7 @@ const TaskList = () => {
                 onPress={() => handleToggle(task)}
                 className="mr-4"
               >
-                <Circle size={24} color="#c1c1c1" />
+                <Ionicons name="ellipse-outline" size={24} color="#c1c1c1" />
               </TouchableOpacity>
 
               {/* Title/Details: opens edit dialog on press */}
@@ -180,7 +196,7 @@ const TaskList = () => {
 
               {/* Delete */}
               <TouchableOpacity onPress={() => handleDelete(task.id)}>
-                <Trash2 color="#c1c1c1" size={20} />
+                <Ionicons name="trash-outline" color="#c1c1c1" size={20} />
               </TouchableOpacity>
             </View>
           ))
@@ -198,7 +214,11 @@ const TaskList = () => {
               onPress={() => handleToggle(task)}
               className="mr-4"
             >
-              <CheckCircle size={24} color="#4caf50" />
+              <Ionicons
+                name="checkmark-circle-outline"
+                size={24}
+                color="#4caf50"
+              />
             </TouchableOpacity>
 
             {/* Title/Details: VIEW ONLY in completed */}
@@ -220,7 +240,7 @@ const TaskList = () => {
                 <Text className="text-blue-400">Undo</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDelete(task.id)}>
-                <Trash2 color="#c1c1c1" size={20} />
+                <Ionicons name="trash-outline" color="#c1c1c1" size={20} />
               </TouchableOpacity>
             </View>
           </View>

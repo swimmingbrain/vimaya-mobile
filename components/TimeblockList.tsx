@@ -1,16 +1,25 @@
-import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Trash2,
-} from "lucide-react-native";
-import { createTimeBlock, deleteTimeBlock, getTimeBlocks, updateTimeBlock } from "@/services/TimeblockService";
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import {
+  createTimeBlock,
+  deleteTimeBlock,
+  getTimeBlocks,
+  updateTimeBlock,
+} from "@/services/TimeblockService";
 import { TimeBlock } from "@/types/types";
 import TimeblockDialog from "./TimeblockDialog";
+import { useAuth } from "@/contexts/AuthContext";
 
 const TimeblockList = () => {
+  const { isAuthenticated } = useAuth();
   const [timeBlocks, setTimeBlocks] = useState<TimeBlock[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,10 +30,16 @@ const TimeblockList = () => {
   );
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setTimeBlocks([]);
+      setLoading(false);
+      return;
+    }
     fetchTimeBlocks();
-  }, []);
+  }, [isAuthenticated]);
 
   const fetchTimeBlocks = async () => {
+    setLoading(true);
     try {
       const data = await getTimeBlocks();
       const sortedData = data.sort(
@@ -32,6 +47,7 @@ const TimeblockList = () => {
           new Date(a.date).getTime() - new Date(b.date).getTime()
       );
       setTimeBlocks(sortedData);
+      setError(null);
     } catch (err) {
       console.log(err);
       setError(
@@ -150,19 +166,35 @@ const TimeblockList = () => {
     });
   };
 
+  if (loading) {
+    return (
+      <View className="flex items-center justify-center py-6">
+        <ActivityIndicator color="#c1c1c1" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="bg-red-500/20 p-4 rounded-lg">
+        <Text className="text-red-400">{error}</Text>
+      </View>
+    );
+  }
+
   const timeBlocksForToday = getTimeBlocksForSelectedDate();
 
   return (
     <View className="flex gap-4">
       <View className="flex flex-row gap-2 items-center">
         <TouchableOpacity onPress={navigateToPreviousDay}>
-          <ChevronLeft color="#c1c1c1" />
+          <Ionicons name="chevron-back" color="#c1c1c1" />
         </TouchableOpacity>
         <Text className="text-xl text-secondary flex-1 text-center">
           {formatSelectedDate()}
         </Text>
         <TouchableOpacity onPress={navigateToNextDay}>
-          <ChevronRight color="#c1c1c1" />
+          <Ionicons name="chevron-forward" color="#c1c1c1" />
         </TouchableOpacity>
       </View>
 
@@ -200,27 +232,27 @@ const TimeblockList = () => {
               <TouchableOpacity
                 onPress={() =>
                   timeBlock.id &&
-                  confirmDeleteTimeBlock(timeBlock.id, timeBlock.title)
-                }
-                className="p-2"
-              >
-                <Trash2 color="#c1c1c1" size={20} />
-              </TouchableOpacity>
-            </View>
-          ))}
+              confirmDeleteTimeBlock(timeBlock.id, timeBlock.title)
+            }
+            className="p-2"
+          >
+            <Ionicons name="trash-outline" color="#c1c1c1" size={20} />
+          </TouchableOpacity>
+        </View>
+      ))}
         </ScrollView>
       )}
 
       <TouchableOpacity
         className="flex flex-row items-center justify-end gap-2"
         onPress={() => {
-          setEditingTimeBlock(null);
-          setDialogVisible(true);
-        }}
-      >
-        <Plus color="#c1c1c1" size={20} />
-        <Text className="text-secondary">Add Activity</Text>
-      </TouchableOpacity>
+      setEditingTimeBlock(null);
+      setDialogVisible(true);
+    }}
+  >
+    <Ionicons name="add" color="#c1c1c1" size={20} />
+    <Text className="text-secondary">Add Activity</Text>
+  </TouchableOpacity>
 
       <TimeblockDialog
         visible={dialogVisible}

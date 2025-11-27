@@ -15,7 +15,8 @@ export const getDailyStatistics = async (date?: Date, friendId?: string): Promis
   try {
     const token = await getToken();
     if (!token) {
-      throw new Error("No authentication token found");
+      console.debug("Skipping statistics fetch: no auth token present");
+      return [];
     }
 
     const url = new URL(`${API_CONFIG.BASE_URL}/api/DailyStatistics`);
