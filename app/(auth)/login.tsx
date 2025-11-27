@@ -11,13 +11,15 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { useState } from "react";
-import { login, saveToken } from "@/services/auth";
+import { login } from "@/services/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { signIn } = useAuth();
 
   const validateForm = () => {
     if (!username.trim()) {
@@ -49,9 +51,7 @@ export default function Login() {
       const response = await login({ username, password });
 
       if (response.token) {
-        // Save the JWT token
-        await saveToken(response.token);
-        // Redirect to dashboard
+        await signIn(response.token);
         router.replace("/");
       } else {
         setError("Login failed");
@@ -128,7 +128,9 @@ export default function Login() {
               </TouchableOpacity>
 
               <View className="flex-row justify-center mt-4">
-                <Text className="text-secondary">Don't have an account? </Text>
+                <Text className="text-secondary">
+                  {"Don't have an account? "}
+                </Text>
                 <TouchableOpacity onPress={() => router.push("/register")}>
                   <Text className="text-secondary font-semibold">Register</Text>
                 </TouchableOpacity>

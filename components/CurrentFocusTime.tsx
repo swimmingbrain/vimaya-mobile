@@ -1,16 +1,23 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { MoveRight } from "lucide-react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { getDailyStatistics } from "@/services/statistics";
+import { useAuth } from "@/contexts/AuthContext";
 
 const CurrentFocusTime = () => {
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [todayStats, setTodayStats] = useState<number>(0);
   const [weeklyStats, setWeeklyStats] = useState<number>(0);
 
   useEffect(() => {
     const fetchStats = async () => {
+      if (!isAuthenticated) {
+        setTodayStats(0);
+        setWeeklyStats(0);
+        return;
+      }
       try {
         const stats = await getDailyStatistics(new Date());
         if (stats.length > 0) {
@@ -29,7 +36,7 @@ const CurrentFocusTime = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [isAuthenticated]);
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -46,7 +53,7 @@ const CurrentFocusTime = () => {
           onPress={() => router.push("/statistics/Statistics")}
         >
           <Text className="text-secondary">all Statistics</Text>
-          <MoveRight color="#c1c1c1" size={20} />
+          <Ionicons name="arrow-forward" color="#c1c1c1" size={20} />
         </TouchableOpacity>
       </View>
       <View className="flex flex-row gap-4">

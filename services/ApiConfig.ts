@@ -6,19 +6,8 @@ function normalizeUrl(url: string) {
 }
 
 function resolveBaseUrl(): string {
-  const fromEnv = process.env.EXPO_PUBLIC_API_URL;
-  if (fromEnv && fromEnv.trim().length > 0) {
-    return normalizeUrl(fromEnv.trim());
-  }
-
-  // Fallback: try host from Expo dev if available, else localhost
-  const hostUri = Constants.expoConfig?.hostUri;
-  if (hostUri) {
-    const host = hostUri.split(":")[0];
-    return `http://172.20.10.3:5139`;
-  }
-
-  return "http://172.20.10.3:5139";
+  // IP Placeholder for testing till backend is online available
+  return "http://192.168.1.20:5139";
 }
 
 export const API_CONFIG = {
