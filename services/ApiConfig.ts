@@ -7,7 +7,7 @@ function normalizeUrl(url: string) {
 
 function resolveBaseUrl(): string {
   // IP Placeholder for testing till backend is online available
-  return "http://192.168.1.20:5139";
+  return "https://192.168.1.20:5139";
 }
 
 export const API_CONFIG = {
