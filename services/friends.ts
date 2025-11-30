@@ -1,4 +1,4 @@
-import { API_CONFIG } from "./ApiConfig";
+import { API_CONFIG, withApiHeaders } from "./ApiConfig";
 import { Friendship } from "@/types/types";
 import { getToken } from "./auth";
 
@@ -11,11 +11,10 @@ export async function getFriends(): Promise<Friendship[]> {
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship`, {
       method: "GET",
-      headers: {
+      headers: withApiHeaders({
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      }),
     });
 
     if (!response.ok) {

@@ -22,6 +22,11 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
+    "extra": {
+      "apiBaseUrl": "http://192.168.1.20:5139",
+      "apiKey": "8888verysuperlongapitsecretsuperkey8888",
+      "apiKeyHeader": "Vimaya-Api-Key"
+    },
     "plugins": [
       "expo-router",
       [

@@ -1,4 +1,4 @@
-import { API_CONFIG } from '@/services/ApiConfig';
+import { API_CONFIG, withApiHeaders } from '@/services/ApiConfig';
 import { getToken } from './auth';
 
 // Simple event emitter for friend notifications
@@ -28,10 +28,10 @@ class FriendNotificationService {
         // Check for new friend requests
         const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship/requests`, {
           method: 'GET',
-          headers: {
+          headers: withApiHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-          }
+          })
         });
 
         if (response.ok) {

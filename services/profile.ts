@@ -1,4 +1,4 @@
-import { API_CONFIG } from "./ApiConfig";
+import { API_CONFIG, withApiHeaders } from "./ApiConfig";
 import { UpdateXPError, UpdateXPResponse, UserProfile } from "@/types/types";
 import { getToken } from "./auth";
 
@@ -11,11 +11,10 @@ export async function getUserProfile(): Promise<UserProfile> {
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/User/profile`, {
       method: "GET",
-      headers: {
+      headers: withApiHeaders({
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      }),
     });
 
     if (!response.ok) {
@@ -35,10 +34,10 @@ export const updateXP = async (xpToAdd: number): Promise<UpdateXPResponse> => {
     const token = await getToken();
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/User/updatexp`, {
       method: "POST",
-      headers: {
+      headers: withApiHeaders({
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      },
+      }),
       body: JSON.stringify({ xpToAdd }),
     });
 

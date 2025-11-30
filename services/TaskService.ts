@@ -1,4 +1,4 @@
-import { API_CONFIG } from "@/services/ApiConfig";
+import { API_CONFIG, withApiHeaders } from "@/services/ApiConfig";
 import { Task } from "@/types/types";
 import { getToken } from "@/services/auth";
 
@@ -9,10 +9,9 @@ export interface CreateTaskDTO {
 }
 
 function authHeaders(token: string) {
-  return {
-    ...API_CONFIG.headers,
+  return withApiHeaders({
     Authorization: `Bearer ${token}`,
-  };
+  });
 }
 
 export async function getAllTasks(): Promise<Task[]> {

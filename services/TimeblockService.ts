@@ -1,5 +1,5 @@
 import { ApiResponse, TimeBlock } from "@/types/types";
-import { API_CONFIG } from "./ApiConfig";
+import { API_CONFIG, withApiHeaders } from "./ApiConfig";
 import { getToken } from "./auth";
 
 export async function getTimeBlocks(): Promise<TimeBlock[]> {
@@ -12,11 +12,10 @@ export async function getTimeBlocks(): Promise<TimeBlock[]> {
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/TimeBlock`, {
       method: "GET",
-      headers: {
+      headers: withApiHeaders({
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      }),
     });
 
     if (!response.ok) {
@@ -44,10 +43,9 @@ export async function getTimeBlockById(
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/TimeBlock/${id}`, {
       method: "GET",
-      headers: {
+      headers: withApiHeaders({
         Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
+      }),
     });
 
     if (!response.ok) {
@@ -74,11 +72,11 @@ export async function createTimeBlock(
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/TimeBlock`, {
       method: "POST",
-      headers: {
+      headers: withApiHeaders({
         Authorization: `Bearer ${token}`,
         Accept: "*/*", // Match the curl request
         "Content-Type": "application/json", // Be explicit about content type
-      },
+      }),
       body: JSON.stringify({
         ...timeBlock,
         date: timeBlock.date, // Send date as a plain string to match curl (for debugging)
@@ -121,11 +119,10 @@ export async function updateTimeBlock(
       `${API_CONFIG.BASE_URL}/api/TimeBlock/${timeBlock.id}`,
       {
         method: "PUT",
-        headers: {
+        headers: withApiHeaders({
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        }),
         body: JSON.stringify({
           ...timeBlock,
           date: new Date(timeBlock.date).toISOString(), // Ensure ISO format
@@ -167,10 +164,9 @@ export async function deleteTimeBlock(
     }
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/TimeBlock/${id}`, {
       method: "DELETE",
-      headers: {
+      headers: withApiHeaders({
         Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
+      }),
     });
 
     if (!response.ok) {

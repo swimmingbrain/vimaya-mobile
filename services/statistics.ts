@@ -1,4 +1,4 @@
-import { API_CONFIG } from "./ApiConfig";
+import { API_CONFIG, withApiHeaders } from "./ApiConfig";
 import { getToken } from "./auth";
 
 export interface DailyStatisticsDTO {
@@ -31,10 +31,10 @@ export const getDailyStatistics = async (date?: Date, friendId?: string): Promis
 
     const response = await fetch(url.toString(), {
       method: 'GET',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-      },
+      }),
     });
 
     if (!response.ok) {
@@ -71,10 +71,10 @@ export const updateDailyStatistics = async (statistics: DailyStatisticsDTO): Pro
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/DailyStatistics/update`, {
       method: 'POST',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-      },
+      }),
       body: JSON.stringify(statistics),
     });
 

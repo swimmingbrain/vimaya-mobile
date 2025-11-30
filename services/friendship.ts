@@ -1,4 +1,4 @@
-import { API_CONFIG } from '@/services/ApiConfig';
+import { API_CONFIG, withApiHeaders } from '@/services/ApiConfig';
 import { getToken } from './auth';
 
 export interface Friendship {
@@ -25,10 +25,10 @@ export const getFriends = async (): Promise<Friendship[]> => {
     const token = await getToken();
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship`, {
       method: 'GET',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      })
     });
 
     if (!response.ok) {
@@ -47,10 +47,10 @@ export const getFriendRequests = async (): Promise<Friendship[]> => {
     const token = await getToken();
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship/requests`, {
       method: 'GET',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      })
     });
 
     if (!response.ok) {
@@ -69,10 +69,10 @@ export const getSentFriendRequests = async (): Promise<Friendship[]> => {
     const token = await getToken();
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship/sent`, {
       method: 'GET',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      })
     });
 
     if (!response.ok) {
@@ -91,10 +91,10 @@ export const sendFriendRequest = async (friendUsername: string): Promise<Friends
     const token = await getToken();
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship/send`, {
       method: 'POST',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      },
+      }),
       body: JSON.stringify({ friendId: friendUsername })
     });
 
@@ -115,10 +115,10 @@ export const acceptFriendRequest = async (friendshipId: number): Promise<Friends
     const token = await getToken();
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship/accept/${friendshipId}`, {
       method: 'POST',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      })
     });
 
     if (!response.ok) {
@@ -138,10 +138,10 @@ export const rejectFriendRequest = async (friendshipId: number): Promise<Friends
     const token = await getToken();
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship/reject/${friendshipId}`, {
       method: 'POST',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      })
     });
 
     if (!response.ok) {
@@ -161,10 +161,10 @@ export const removeFriend = async (friendshipId: number): Promise<boolean> => {
     const token = await getToken();
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/Friendship/${friendshipId}`, {
       method: 'DELETE',
-      headers: {
+      headers: withApiHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      })
     });
 
     if (!response.ok) {

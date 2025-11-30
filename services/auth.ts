@@ -5,7 +5,7 @@ import {
   LoginResponse,
   ApiResponse,
 } from "@/types/types";
-import { API_CONFIG } from "./ApiConfig";
+import { API_CONFIG, withApiHeaders } from "./ApiConfig";
 
 const TOKEN_KEY = "auth_token";
 
@@ -44,10 +44,9 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
       `${API_CONFIG.BASE_URL}/api/Authenticate/login`,
       {
         method: "POST",
-        headers: {
+        headers: withApiHeaders({
           "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        }),
         body: JSON.stringify(credentials),
       }
     );
@@ -71,10 +70,9 @@ export async function register(data: RegisterRequest): Promise<ApiResponse> {
       `${API_CONFIG.BASE_URL}/api/Authenticate/register`,
       {
         method: "POST",
-        headers: {
+        headers: withApiHeaders({
           "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        }),
         body: JSON.stringify(data),
       }
     );
