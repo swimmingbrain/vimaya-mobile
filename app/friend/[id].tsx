@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
-import { MoveLeft } from "lucide-react-native";
 import { router, useLocalSearchParams, Stack } from "expo-router";
 import { getDailyStatistics } from "@/services/statistics";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -141,7 +140,7 @@ const FriendProfile = () => {
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView className="bg-black">
         <View className="flex gap-10 px-4 py-4">
-          <Header title="Friend Profile" icon={MoveLeft} />
+          <Header title="Friend Profile" icon="arrow-back" />
 
           {/* Profile Section */}
           <View className="bg-secondary/10 p-4 rounded-lg">
@@ -180,7 +179,7 @@ const FriendProfile = () => {
             <View className="flex-row flex-wrap justify-between">
               <View className="w-[48%] bg-primary/10 p-4 rounded-lg mb-4">
                 <Text className="text-secondary/70 text-sm">
-                  Today's Focus Time
+                  {"Today's Focus Time"}
                 </Text>
                 <Text className="text-secondary text-2xl font-bold">
                   {formatTime(statistics.today)}

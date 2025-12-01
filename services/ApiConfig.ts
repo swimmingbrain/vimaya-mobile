@@ -1,7 +1,18 @@
+import { Platform } from "react-native";
+import Constants from "expo-constants";
+
+function normalizeUrl(url: string) {
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+}
+
+function resolveBaseUrl(): string {
+  // IP Placeholder for testing till backend is online available
+  return "https://192.168.1.20:5139";
+}
+
 export const API_CONFIG = {
-  BASE_URL: "http://192.168.178.21:5139",
+  BASE_URL: resolveBaseUrl(),
   headers: {
-    //Authorization: `Bearer`,
     accept: "application/json",
   },
 };

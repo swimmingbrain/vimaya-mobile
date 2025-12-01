@@ -13,7 +13,7 @@ import { updateXP } from "@/services/profile";
 import { updateDailyStatistics } from "@/services/statistics";
 import type { AppStateStatus } from "react-native";
 
-const FOCUS_MODE_SCREEN_LOCK_THRESHOLD_MS = 25; // Your observed threshold for screen lock
+const FOCUS_MODE_SCREEN_LOCK_THRESHOLD_MS = 100; // Treat very fast inactive -> background as screen lock
 
 const FocusMode = () => {
   const [timer, setTimer] = useState(0);
@@ -27,6 +27,8 @@ const FocusMode = () => {
   const timerIntervalRef = useRef<number | null>(null);
   const xpIntervalRef = useRef<number | null>(null);
   const inactiveTimestamp = useRef<number | null>(null); // To store timestamp when app goes inactive
+  const backgroundStartTimestamp = useRef<number | null>(null); // When background begins
+  const accumulateWhileBackground = useRef<boolean>(false); // Whether to add elapsed time on resume
 
   const router = useRouter();
 
@@ -58,7 +60,7 @@ const FocusMode = () => {
         // App is inactive (e.g., screen lock, incoming call, multitasking view)
         // Store the timestamp to measure transition time later
         inactiveTimestamp.current = Date.now();
-        // Timer continues in 'inactive' on iOS
+        // Keep timer running while inactive on iOS
         setIsRunning(true);
       } else if (nextAppState === "background") {
         // App has moved to the background (e.g., user pressed home button, or screen was locked)
@@ -66,6 +68,7 @@ const FocusMode = () => {
           ? Date.now() - inactiveTimestamp.current
           : -1;
         inactiveTimestamp.current = null; // Reset timestamp
+        backgroundStartTimestamp.current = Date.now();
 
         console.log(
           `iOS: App went background. Transition duration from inactive: ${transitionDuration}ms`
@@ -75,22 +78,34 @@ const FocusMode = () => {
           transitionDuration !== -1 &&
           transitionDuration <= FOCUS_MODE_SCREEN_LOCK_THRESHOLD_MS
         ) {
-          // This highly likely indicates a screen lock (very fast transition from inactive to background)
+          // Screen locked detected — keep running and compensate on resume
           console.log(
             "iOS: Detected screen lock (fast inactive -> background)."
           );
-          // You want to pause the timer here, even though it's technically a "screen lock"
-          // if your goal is to prevent XP gain when the screen is off / not actively engaged.
-          // If you want XP to continue during screen lock, set setIsRunning(true) here.
-          setIsRunning(true); // Timer/XP pauses when screen is locked
+          accumulateWhileBackground.current = true;
+          setIsRunning(true);
         } else {
-          // Fallback
+          // Genuine backgrounding — pause
+          accumulateWhileBackground.current = false;
           setIsRunning(false);
         }
       } else if (nextAppState === "active") {
         // App is back in foreground
-        setIsRunning(true);
+        // If we were accumulating while background (screen lock), add elapsed time
+        if (accumulateWhileBackground.current && backgroundStartTimestamp.current) {
+          const elapsedSec = Math.max(
+            0,
+            Math.floor((Date.now() - backgroundStartTimestamp.current) / 1000)
+          );
+          if (elapsedSec > 0) {
+            setTimer((prev) => prev + elapsedSec);
+            setXp((prevXp) => prevXp + elapsedSec * 50);
+          }
+        }
+        accumulateWhileBackground.current = false;
+        backgroundStartTimestamp.current = null;
         inactiveTimestamp.current = null; // Ensure timestamp is clear
+        setIsRunning(true);
       }
     } else {
       // Android

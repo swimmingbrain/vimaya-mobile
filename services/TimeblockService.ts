@@ -6,7 +6,8 @@ export async function getTimeBlocks(): Promise<TimeBlock[]> {
   try {
     const token = await getToken();
     if (!token) {
-      throw new Error("No authentication token found");
+      console.debug("Skipping time block fetch: no auth token present");
+      return [];
     }
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/TimeBlock`, {
@@ -37,7 +38,8 @@ export async function getTimeBlockById(
   try {
     const token = await getToken();
     if (!token) {
-      throw new Error("No authentication token found");
+      console.debug("Skipping time block fetch by id: no auth token present");
+      throw new Error("Authentication required");
     }
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/TimeBlock/${id}`, {
@@ -112,6 +114,9 @@ export async function updateTimeBlock(
 ): Promise<TimeBlock | null> {
   try {
     const token = await getToken();
+    if (!token) {
+      throw new Error("Authentication required");
+    }
     const response = await fetch(
       `${API_CONFIG.BASE_URL}/api/TimeBlock/${timeBlock.id}`,
       {
@@ -157,6 +162,9 @@ export async function deleteTimeBlock(
 ): Promise<void> {
   try {
     const token = await getToken();
+    if (!token) {
+      throw new Error("Authentication required");
+    }
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/TimeBlock/${id}`, {
       method: "DELETE",
       headers: {
