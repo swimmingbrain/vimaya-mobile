@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { colors } from "@/utils/theme";
 
 interface FocusSummaryProps {
   today: number;
@@ -7,25 +8,25 @@ interface FocusSummaryProps {
   formatTime: (seconds: number) => string;
 }
 
-const FocusSummary = ({
-  today,
-  currentWeek,
-  formatTime,
-}: FocusSummaryProps) => (
-  <View className="bg-secondary/10 p-4 rounded-lg">
-    <Text className="text-secondary text-lg mb-4">Daily Statistics</Text>
-    <View className="space-y-4">
-      <View className="flex-row justify-between items-center">
-        <Text className="text-secondary">Focustime today</Text>
-        <Text className="text-secondary font-bold">
-          {formatTime(today)}
-        </Text>
+const FocusSummary = ({ today, currentWeek, formatTime }: FocusSummaryProps) => (
+  <View style={{
+    backgroundColor: colors.surface,
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.surface2,
+  }}>
+    <Text style={{ color: colors.text, fontSize: 17, fontWeight: "600", marginBottom: 16 }}>
+      Daily Statistics
+    </Text>
+    <View style={{ gap: 16 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <Text style={{ color: colors.muted, fontSize: 15 }}>Focus time today</Text>
+        <Text style={{ color: colors.text, fontSize: 15, fontWeight: "600" }}>{formatTime(today)}</Text>
       </View>
-      <View className="flex-row justify-between items-center">
-        <Text className="text-secondary">Focustime this week</Text>
-        <Text className="text-secondary font-bold">
-          {formatTime(currentWeek)}
-        </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <Text style={{ color: colors.muted, fontSize: 15 }}>Focus time this week</Text>
+        <Text style={{ color: colors.text, fontSize: 15, fontWeight: "600" }}>{formatTime(currentWeek)}</Text>
       </View>
     </View>
   </View>

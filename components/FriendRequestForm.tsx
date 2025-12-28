@@ -1,37 +1,38 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { sendFriendRequest } from '@/services/friendship';
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { sendFriendRequest } from "@/services/friendship";
+import { colors } from "@/utils/theme";
 
 interface FriendRequestFormProps {
   onRequestSent: () => void;
 }
 
 const FriendRequestForm: React.FC<FriendRequestFormProps> = ({ onRequestSent }) => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async () => {
     if (!username.trim()) {
-      setError('Please enter a username');
+      setError("Please enter a username");
       return;
     }
 
     setIsLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
       const response = await sendFriendRequest(username.trim());
       setSuccess(response.message);
-      setUsername('');
+      setUsername("");
       onRequestSent();
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('Failed to send friend request');
+        setError("Failed to send friend request");
       }
     } finally {
       setIsLoading(false);
@@ -39,41 +40,68 @@ const FriendRequestForm: React.FC<FriendRequestFormProps> = ({ onRequestSent }) 
   };
 
   return (
-    <View className="bg-secondary/10 p-4 rounded-lg mb-4">
-      <Text className="text-secondary text-lg font-bold mb-2">Add Friend</Text>
-      
-      <View className="mb-3">
+    <View
+      style={{
+        backgroundColor: colors.surface,
+        padding: 20,
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: colors.surface2,
+      }}
+    >
+      <Text style={{ color: colors.text, fontSize: 17, fontWeight: "600", marginBottom: 16 }}>
+        Add Friend
+      </Text>
+
+      <View style={{ marginBottom: 12 }}>
         <TextInput
-          className="bg-secondary/20 p-3 rounded text-secondary"
+          style={{
+            backgroundColor: colors.bgAlt,
+            padding: 14,
+            borderRadius: 10,
+            color: colors.text,
+            fontSize: 15,
+            borderWidth: 1,
+            borderColor: colors.surface2,
+          }}
           placeholder="Enter username"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.muted}
           value={username}
           onChangeText={setUsername}
           autoCapitalize="none"
         />
       </View>
-      
+
       {error ? (
-        <Text className="text-red-500 mb-2">{error}</Text>
+        <View style={{ backgroundColor: colors.error + "20", padding: 10, borderRadius: 8, marginBottom: 12 }}>
+          <Text style={{ color: colors.error, fontSize: 13 }}>{error}</Text>
+        </View>
       ) : null}
-      
+
       {success ? (
-        <Text className="text-green-500 mb-2">{success}</Text>
+        <View style={{ backgroundColor: colors.success + "20", padding: 10, borderRadius: 8, marginBottom: 12 }}>
+          <Text style={{ color: colors.success, fontSize: 13 }}>{success}</Text>
+        </View>
       ) : null}
-      
+
       <TouchableOpacity
-        className="bg-primary p-3 rounded"
+        style={{
+          backgroundColor: colors.cool,
+          padding: 14,
+          borderRadius: 10,
+          alignItems: "center",
+        }}
         onPress={handleSubmit}
         disabled={isLoading}
       >
         {isLoading ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={colors.text} />
         ) : (
-          <Text className="text-white text-center font-bold">Send Friend Request</Text>
+          <Text style={{ color: colors.text, fontWeight: "600", fontSize: 15 }}>Send Friend Request</Text>
         )}
       </TouchableOpacity>
     </View>
   );
 };
 
-export default FriendRequestForm; 
+export default FriendRequestForm;

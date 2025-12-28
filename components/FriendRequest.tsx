@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Friendship } from '@/services/friendship';
-import { acceptFriendRequest, rejectFriendRequest } from '@/services/friendship';
+import React from "react";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Friendship } from "@/services/friendship";
+import { colors } from "@/utils/theme";
 
 interface FriendRequestProps {
   request: Friendship;
@@ -10,46 +10,69 @@ interface FriendRequestProps {
   isLoading: boolean;
 }
 
-const FriendRequest: React.FC<FriendRequestProps> = ({ 
-  request, 
-  onAccept, 
-  onReject,
-  isLoading 
-}) => {
+const FriendRequest: React.FC<FriendRequestProps> = ({ request, onAccept, onReject, isLoading }) => {
   return (
-    <View className="bg-secondary/10 p-4 rounded-lg mb-4">
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center space-x-4">
-          <View className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center">
-            <Text className="text-primary text-lg font-bold">
+    <View
+      style={{
+        backgroundColor: colors.surface,
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: colors.surface2,
+      }}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+          <View
+            style={{
+              height: 44,
+              width: 44,
+              borderRadius: 22,
+              backgroundColor: colors.warm,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: "700" }}>
               {request.friendUsername.charAt(0).toUpperCase()}
             </Text>
           </View>
           <View>
-            <Text className="text-secondary font-medium">
+            <Text style={{ color: colors.text, fontWeight: "500", fontSize: 15 }}>
               {request.friendUsername}
             </Text>
-            <Text className="text-secondary/70 text-sm">
+            <Text style={{ color: colors.muted, fontSize: 13, marginTop: 2 }}>
               {new Date(request.createdAt).toLocaleDateString()}
             </Text>
           </View>
         </View>
-        
+
         {isLoading ? (
-          <ActivityIndicator color="#c1c1c1" />
+          <ActivityIndicator color={colors.muted} />
         ) : (
-          <View className="flex-row space-x-2">
+          <View style={{ flexDirection: "row", gap: 8 }}>
             <TouchableOpacity
-              className="bg-green-500 px-3 py-1 rounded"
+              style={{
+                backgroundColor: colors.success + "30",
+                paddingHorizontal: 14,
+                paddingVertical: 8,
+                borderRadius: 8,
+              }}
               onPress={() => onAccept(request.id)}
             >
-              <Text className="text-white font-medium">Accept</Text>
+              <Text style={{ color: colors.success, fontWeight: "500", fontSize: 13 }}>Accept</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-red-500 px-3 py-1 rounded"
+              style={{
+                backgroundColor: colors.error + "20",
+                paddingHorizontal: 14,
+                paddingVertical: 8,
+                borderRadius: 8,
+              }}
               onPress={() => onReject(request.id)}
             >
-              <Text className="text-white font-medium">Reject</Text>
+              <Text style={{ color: colors.error, fontWeight: "500", fontSize: 13 }}>Reject</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -58,4 +81,4 @@ const FriendRequest: React.FC<FriendRequestProps> = ({
   );
 };
 
-export default FriendRequest; 
+export default FriendRequest;

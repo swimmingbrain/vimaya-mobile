@@ -13,6 +13,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { login } from "@/services/auth";
 import { useAuth } from "@/contexts/AuthContext";
+import { colors } from "@/utils/theme";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -57,9 +58,7 @@ export default function Login() {
         setError("Login failed");
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An error occurred during login"
-      );
+      setError(err instanceof Error ? err.message : "An error occurred during login");
     } finally {
       setIsSubmitting(false);
     }
@@ -67,7 +66,7 @@ export default function Login() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-primary"
+      style={{ flex: 1, backgroundColor: colors.bg }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 0}
     >
@@ -77,38 +76,53 @@ export default function Login() {
           keyboardDismissMode="on-drag"
           contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24 }}
         >
-          <View className="flex-1 justify-center">
-            <Text className="text-3xl font-bold text-center mb-12 text-secondary">
-              Welcome to MonkMode
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Text style={{ color: colors.text, fontSize: 28, fontWeight: "700", textAlign: "center", marginBottom: 8 }}>
+              Welcome back
+            </Text>
+            <Text style={{ color: colors.muted, fontSize: 15, textAlign: "center", marginBottom: 40 }}>
+              Sign in to continue to VIMAYA
             </Text>
 
-            <View className="flex flex-col gap-4">
+            <View style={{ gap: 16 }}>
               {error ? (
-                <Text className="text-red-500 text-center">{error}</Text>
+                <View style={{ backgroundColor: colors.error + "20", padding: 12, borderRadius: 10 }}>
+                  <Text style={{ color: colors.error, textAlign: "center" }}>{error}</Text>
+                </View>
               ) : null}
 
               <TextInput
-                className="border border-secondary rounded-lg p-4 text-secondary"
-                placeholder="Username"
-                placeholderTextColor="#c1c1c1"
-                value={username}
-                onChangeText={(text) => {
-                  setUsername(text);
-                  setError("");
+                style={{
+                  backgroundColor: colors.surface,
+                  borderWidth: 1,
+                  borderColor: colors.surface2,
+                  borderRadius: 12,
+                  padding: 16,
+                  color: colors.text,
+                  fontSize: 16,
                 }}
+                placeholder="Username"
+                placeholderTextColor={colors.muted}
+                value={username}
+                onChangeText={(text) => { setUsername(text); setError(""); }}
                 autoCapitalize="none"
                 returnKeyType="next"
               />
 
               <TextInput
-                className="border border-secondary rounded-lg p-4 text-secondary"
-                placeholder="Password"
-                placeholderTextColor="#c1c1c1"
-                value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                  setError("");
+                style={{
+                  backgroundColor: colors.surface,
+                  borderWidth: 1,
+                  borderColor: colors.surface2,
+                  borderRadius: 12,
+                  padding: 16,
+                  color: colors.text,
+                  fontSize: 16,
                 }}
+                placeholder="Password"
+                placeholderTextColor={colors.muted}
+                value={password}
+                onChangeText={(text) => { setPassword(text); setError(""); }}
                 secureTextEntry
                 autoCapitalize="none"
                 returnKeyType="done"
@@ -116,23 +130,24 @@ export default function Login() {
               />
 
               <TouchableOpacity
-                className={`p-4 rounded-lg ${
-                  isSubmitting ? "bg-gray-500" : "bg-secondary"
-                }`}
+                style={{
+                  backgroundColor: isSubmitting ? colors.surface2 : colors.warm,
+                  padding: 16,
+                  borderRadius: 12,
+                  opacity: isSubmitting ? 0.7 : 1,
+                }}
                 onPress={handleLogin}
                 disabled={isSubmitting}
               >
-                <Text className="text-primary text-center font-semibold">
-                  {isSubmitting ? "Logging in..." : "Login"}
+                <Text style={{ color: colors.text, textAlign: "center", fontWeight: "600", fontSize: 16 }}>
+                  {isSubmitting ? "Signing in..." : "Sign In"}
                 </Text>
               </TouchableOpacity>
 
-              <View className="flex-row justify-center mt-4">
-                <Text className="text-secondary">
-                  {"Don't have an account? "}
-                </Text>
+              <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 16 }}>
+                <Text style={{ color: colors.muted }}>Don't have an account? </Text>
                 <TouchableOpacity onPress={() => router.push("/register")}>
-                  <Text className="text-secondary font-semibold">Register</Text>
+                  <Text style={{ color: colors.cool, fontWeight: "600" }}>Register</Text>
                 </TouchableOpacity>
               </View>
             </View>

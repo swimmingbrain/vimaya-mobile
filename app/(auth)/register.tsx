@@ -12,6 +12,7 @@ import {
 import { router } from "expo-router";
 import { useState } from "react";
 import { register } from "@/services/auth";
+import { colors } from "@/utils/theme";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -42,8 +43,7 @@ export default function Register() {
       setError("Email cannot contain spaces");
       return false;
     }
-    // Basic email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^s@]+@[^s@]+.[^s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address");
       return false;
@@ -56,10 +56,6 @@ export default function Register() {
       setError("Password cannot contain spaces");
       return false;
     }
-    /*if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      return false;
-    }*/
     if (!confirmPassword.trim()) {
       setError("Please confirm your password");
       return false;
@@ -89,19 +85,25 @@ export default function Register() {
         setError(response.message || "Registration failed");
       }
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred during registration"
-      );
+      setError(err instanceof Error ? err.message : "An error occurred during registration");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const inputStyle = {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.surface2,
+    borderRadius: 12,
+    padding: 16,
+    color: colors.text,
+    fontSize: 16,
+  };
+
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-primary"
+      style={{ flex: 1, backgroundColor: colors.bg }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 0}
     >
@@ -111,66 +113,59 @@ export default function Register() {
           keyboardDismissMode="on-drag"
           contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24 }}
         >
-          <View className="flex-1 justify-center">
-            <Text className="text-3xl font-bold text-center mb-12 text-secondary">
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Text style={{ color: colors.text, fontSize: 28, fontWeight: "700", textAlign: "center", marginBottom: 8 }}>
               Create Account
             </Text>
+            <Text style={{ color: colors.muted, fontSize: 15, textAlign: "center", marginBottom: 40 }}>
+              Join VIMAYA and take control of your focus
+            </Text>
 
-            <View className="flex flex-col gap-4">
+            <View style={{ gap: 16 }}>
               {error ? (
-                <Text className="text-red-500 text-center">{error}</Text>
+                <View style={{ backgroundColor: colors.error + "20", padding: 12, borderRadius: 10 }}>
+                  <Text style={{ color: colors.error, textAlign: "center" }}>{error}</Text>
+                </View>
               ) : null}
 
               <TextInput
-                className="border border-secondary rounded-lg p-4 text-secondary"
+                style={inputStyle}
                 placeholder="Username"
-                placeholderTextColor="#c1c1c1"
+                placeholderTextColor={colors.muted}
                 value={username}
-                onChangeText={(text) => {
-                  setUsername(text);
-                  setError("");
-                }}
+                onChangeText={(text) => { setUsername(text); setError(""); }}
                 autoCapitalize="none"
                 returnKeyType="next"
               />
 
               <TextInput
-                className="border border-secondary rounded-lg p-4 text-secondary"
+                style={inputStyle}
                 placeholder="Email"
-                placeholderTextColor="#c1c1c1"
+                placeholderTextColor={colors.muted}
                 value={email}
-                onChangeText={(text) => {
-                  setEmail(text);
-                  setError("");
-                }}
+                onChangeText={(text) => { setEmail(text); setError(""); }}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 returnKeyType="next"
               />
 
               <TextInput
-                className="border border-secondary rounded-lg p-4 text-secondary"
+                style={inputStyle}
                 placeholder="Password"
-                placeholderTextColor="#c1c1c1"
+                placeholderTextColor={colors.muted}
                 value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                  setError("");
-                }}
+                onChangeText={(text) => { setPassword(text); setError(""); }}
                 secureTextEntry
                 autoCapitalize="none"
                 returnKeyType="next"
               />
 
               <TextInput
-                className="border border-secondary rounded-lg p-4 text-secondary"
+                style={inputStyle}
                 placeholder="Confirm Password"
-                placeholderTextColor="#c1c1c1"
+                placeholderTextColor={colors.muted}
                 value={confirmPassword}
-                onChangeText={(text) => {
-                  setConfirmPassword(text);
-                  setError("");
-                }}
+                onChangeText={(text) => { setConfirmPassword(text); setError(""); }}
                 secureTextEntry
                 autoCapitalize="none"
                 returnKeyType="done"
@@ -178,21 +173,24 @@ export default function Register() {
               />
 
               <TouchableOpacity
-                className={`p-4 rounded-lg ${
-                  isSubmitting ? "bg-gray-500" : "bg-secondary"
-                }`}
+                style={{
+                  backgroundColor: isSubmitting ? colors.surface2 : colors.warm,
+                  padding: 16,
+                  borderRadius: 12,
+                  opacity: isSubmitting ? 0.7 : 1,
+                }}
                 onPress={handleRegister}
                 disabled={isSubmitting}
               >
-                <Text className="text-primary text-center font-semibold">
-                  {isSubmitting ? "Registering..." : "Register"}
+                <Text style={{ color: colors.text, textAlign: "center", fontWeight: "600", fontSize: 16 }}>
+                  {isSubmitting ? "Creating account..." : "Create Account"}
                 </Text>
               </TouchableOpacity>
 
-              <View className="flex-row justify-center mt-4">
-                <Text className="text-secondary">Already have an account? </Text>
+              <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 16 }}>
+                <Text style={{ color: colors.muted }}>Already have an account? </Text>
                 <TouchableOpacity onPress={() => router.push("/login")}>
-                  <Text className="text-secondary font-semibold">Login</Text>
+                  <Text style={{ color: colors.cool, fontWeight: "600" }}>Sign In</Text>
                 </TouchableOpacity>
               </View>
             </View>

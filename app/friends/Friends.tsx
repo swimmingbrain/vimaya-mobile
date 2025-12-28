@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "@/components/Header";
 import FriendRequestForm from "@/components/FriendRequestForm";
@@ -13,6 +8,7 @@ import FriendRequestsList from "@/components/friends/FriendRequestsList";
 import FriendsList from "@/components/friends/FriendsList";
 import FriendsTabs from "@/components/friends/FriendsTabs";
 import { useFriendsScreen } from "@/hooks/friends/useFriendsScreen";
+import { colors } from "@/utils/theme";
 
 const Friends = () => {
   const {
@@ -34,9 +30,9 @@ const Friends = () => {
   }
 
   return (
-    <SafeAreaView className="bg-black h-full py-8">
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, paddingVertical: 16 }}>
       <ScrollView>
-        <View className="flex gap-10 px-4 py-4">
+        <View style={{ gap: 24, paddingHorizontal: 16, paddingVertical: 16 }}>
           <Header title="Friends" icon="arrow-back" />
           <FriendsTabs
             activeTab={activeTab}
@@ -46,12 +42,12 @@ const Friends = () => {
           />
           <FriendRequestForm onRequestSent={handleRequestSent} />
           {loading ? (
-            <View className="flex items-center justify-center py-10">
-              <ActivityIndicator size="large" color="#c1c1c1" />
+            <View style={{ alignItems: "center", justifyContent: "center", paddingVertical: 40 }}>
+              <ActivityIndicator size="large" color={colors.warm} />
             </View>
           ) : error ? (
-            <View className="bg-red-500/20 p-4 rounded-lg">
-              <Text className="text-red-500">{error}</Text>
+            <View style={{ backgroundColor: colors.error + "20", padding: 16, borderRadius: 12 }}>
+              <Text style={{ color: colors.error }}>{error}</Text>
             </View>
           ) : activeTab === "friends" ? (
             <FriendsList

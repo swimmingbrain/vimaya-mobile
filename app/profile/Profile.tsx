@@ -8,6 +8,7 @@ import FriendsPreview from "@/components/profile/FriendsPreview";
 import LogoutButton from "@/components/profile/LogoutButton";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import { useProfileScreen } from "@/hooks/profile/useProfileScreen";
+import { colors } from "@/utils/theme";
 
 const Profile = () => {
   const {
@@ -25,9 +26,9 @@ const Profile = () => {
   }
 
   return (
-    <SafeAreaView className="bg-black h-full py-8">
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, paddingVertical: 16 }}>
       <ScrollView>
-        <View className="flex gap-10 px-4 py-4">
+        <View style={{ gap: 24, paddingHorizontal: 16, paddingVertical: 16 }}>
           <Header title="Profile" icon="arrow-back" />
           <ProfileHeader user={user} />
           <FocusStatisticsGrid stats={focusStats} />

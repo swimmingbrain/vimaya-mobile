@@ -1,13 +1,18 @@
-import { Platform } from "react-native";
 import Constants from "expo-constants";
 
-function normalizeUrl(url: string) {
-  return url.endsWith("/") ? url.slice(0, -1) : url;
-}
+const PRODUCTION_API_URL = "https://api.vimaya.app";
 
 function resolveBaseUrl(): string {
-  // IP Placeholder for testing till backend is online available
-  return "https://192.168.1.20:5139";
+  const envUrl = Constants.expoConfig?.extra?.apiUrl;
+  if (envUrl) {
+    return envUrl.endsWith("/") ? envUrl.slice(0, -1) : envUrl;
+  }
+
+  if (__DEV__) {
+    return "http://192.168.1.20:5139";
+  }
+
+  return PRODUCTION_API_URL;
 }
 
 export const API_CONFIG = {

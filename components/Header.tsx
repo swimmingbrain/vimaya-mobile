@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { ComponentProps } from "react";
-import { useRouter } from "expo-router";
+import { useRouter, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { colors } from "@/utils/theme";
 
 interface HeaderProps {
   title: string;
@@ -10,22 +11,70 @@ interface HeaderProps {
 
 const Header = ({ title, icon }: HeaderProps) => {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const navigateTo = (path: string) => {
+    // Normalize paths for comparison
+    const currentPath = pathname === "/" ? "/" : pathname;
+    const targetPath = path === "/" ? "/" : path;
+    
+    // Don't navigate if already on the same page
+    if (currentPath === targetPath) return;
+    
+    // Use replace to avoid stacking screens
+    router.replace(path as any);
+  };
+
+  const isActive = (path: string) => {
+    if (path === "/") return pathname === "/" || pathname === "/index";
+    return pathname.startsWith(path);
+  };
 
   return (
-    <View className="flex flex-row items-center justify-between">
-      <View className="flex flex-row gap-2 items-center">
-        <TouchableOpacity onPress={() => router.push("/")}>
-          <Ionicons name={icon} size={24} color="#c1c1c1" />
+    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+      <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
+        <TouchableOpacity
+          onPress={() => navigateTo("/")}
+          style={{
+            backgroundColor: isActive("/") ? colors.warm : colors.surface,
+            padding: 8,
+            borderRadius: 10,
+          }}
+        >
+          <Ionicons name={icon} size={20} color={isActive("/") ? colors.text : colors.muted} />
         </TouchableOpacity>
-        <Text className="text-secondary text-2xl">{title}</Text>
+        <Text style={{ color: colors.text, fontSize: 22, fontWeight: "600" }}>{title}</Text>
       </View>
-      <View className="flex flex-row gap-4">
-        <TouchableOpacity onPress={() => router.push("/friends/Friends")}>
-          <Ionicons name="people-outline" size={24} color="#c1c1c1" />
+      <View style={{ flexDirection: "row", gap: 12 }}>
+        <TouchableOpacity
+          onPress={() => navigateTo("/friends/Friends")}
+          style={{
+            backgroundColor: isActive("/friends") ? colors.cool : colors.surface,
+            padding: 8,
+            borderRadius: 10,
+          }}
+        >
+          <Ionicons name="people-outline" size={20} color={isActive("/friends") ? colors.text : colors.muted} />
         </TouchableOpacity>
-        <Ionicons name="calendar-outline" size={24} color="#c1c1c1" />
-        <TouchableOpacity onPress={() => router.push("/profile/Profile")}>
-          <Ionicons name="person-circle-outline" size={24} color="#c1c1c1" />
+        <TouchableOpacity
+          onPress={() => navigateTo("/statistics/Statistics")}
+          style={{
+            backgroundColor: isActive("/statistics") ? colors.cool : colors.surface,
+            padding: 8,
+            borderRadius: 10,
+          }}
+        >
+          <Ionicons name="stats-chart-outline" size={20} color={isActive("/statistics") ? colors.text : colors.muted} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigateTo("/profile/Profile")}
+          style={{
+            backgroundColor: isActive("/profile") ? colors.cool : colors.surface,
+            padding: 8,
+            borderRadius: 10,
+          }}
+        >
+          <Ionicons name="person-circle-outline" size={20} color={isActive("/profile") ? colors.text : colors.muted} />
         </TouchableOpacity>
       </View>
     </View>

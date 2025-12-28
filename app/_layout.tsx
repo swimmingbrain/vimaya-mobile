@@ -28,12 +28,19 @@ const RootNavigator = () => {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: "fade",
+        animationDuration: 200,
+      }}
+    >
       <Stack.Screen name="(auth)/login" />
       <Stack.Screen name="(auth)/register" />
       <Stack.Screen name="index" />
       <Stack.Screen name="focusmode/FocusMode" />
       <Stack.Screen name="friends/Friends" />
+      <Stack.Screen name="friend/[id]" />
       <Stack.Screen name="profile/Profile" />
       <Stack.Screen name="statistics/Statistics" />
     </Stack>

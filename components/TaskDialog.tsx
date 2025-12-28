@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Task } from "@/types/types";
 import { createTask, updateTask } from "@/services/TaskService";
+import { colors } from "@/utils/theme";
 
 interface TaskDialogProps {
   visible: boolean;
@@ -21,33 +22,25 @@ interface TaskDialogProps {
   task?: Task | null;
 }
 
-const TaskDialog: React.FC<TaskDialogProps> = ({
-  visible,
-  onClose,
-  onSave,
-  task,
-}) => {
+const TaskDialog: React.FC<TaskDialogProps> = ({ visible, onClose, onSave, task }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Load task data when editing
   useEffect(() => {
     if (task) {
       setTitle(task.title);
       setDescription(task.description ?? "");
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
     } else {
-      // Reset form when creating new
       setTitle("");
       setDescription("");
       setDueDate(undefined);
     }
   }, [task, visible]);
 
-  // Auto-default dueDate to today on first open of picker
   useEffect(() => {
     if (showDatePicker && dueDate === undefined) {
       setDueDate(new Date());
@@ -59,7 +52,6 @@ const TaskDialog: React.FC<TaskDialogProps> = ({
       Alert.alert("Validation", "Title is required");
       return false;
     }
-    // Prevent past-dates
     if (dueDate) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -86,98 +78,89 @@ const TaskDialog: React.FC<TaskDialogProps> = ({
       };
 
       if (task?.id) {
-        // Update existing task
         await updateTask(task.id, taskData);
         onSave({ ...task, ...taskData });
       } else {
-        // Create new task
         const newTask = await createTask(taskData);
         onSave(newTask);
       }
       onClose();
     } catch (error) {
-      Alert.alert(
-        "Error",
-        error instanceof Error ? error.message : "Failed to save task"
-      );
+      Alert.alert("Error", error instanceof Error ? error.message : "Failed to save task");
     } finally {
       setSaving(false);
     }
   };
 
+  const inputStyle = {
+    backgroundColor: colors.bgAlt,
+    borderWidth: 1,
+    borderColor: colors.surface2,
+    borderRadius: 10,
+    padding: 14,
+    color: colors.text,
+    fontSize: 15,
+  };
+
   return (
     <Modal visible={visible} transparent={true} onRequestClose={onClose}>
-      <View className="flex-1 bg-black/50 justify-center items-center">
+      <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "center", alignItems: "center" }}>
         <View
-          style={{ backgroundColor: "#1e1e1e" }}
-          className="rounded-lg p-5 w-[90%] max-w-[400px]"
+          style={{
+            backgroundColor: colors.surface,
+            borderRadius: 16,
+            padding: 24,
+            width: "90%",
+            maxWidth: 400,
+            borderWidth: 1,
+            borderColor: colors.surface2,
+          }}
         >
-          <View className="flex-row justify-between items-center mb-5">
-            <Text className="text-xl font-bold" style={{ color: "#fff" }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+            <Text style={{ color: colors.text, fontSize: 20, fontWeight: "700" }}>
               {task ? "Edit Task" : "Add Task"}
             </Text>
-            <TouchableOpacity onPress={onClose}>
-              <Ionicons name="close" color="#c1c1c1" size={24} />
+            <TouchableOpacity onPress={onClose} style={{ padding: 4 }}>
+              <Ionicons name="close" color={colors.muted} size={24} />
             </TouchableOpacity>
           </View>
 
-          <View className="mb-4">
-            <Text className="mb-1" style={{ color: "#fff" }}>
-              Title
-            </Text>
+          <View style={{ marginBottom: 16 }}>
+            <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 8 }}>Title</Text>
             <TextInput
-              style={{
-                backgroundColor: "#000",
-                color: "#fff",
-                borderRadius: 8,
-              }}
-              className="p-3 mt-1 mb-1"
+              style={inputStyle}
               value={title}
               onChangeText={setTitle}
               placeholder="Enter task title"
-              placeholderTextColor="#888"
+              placeholderTextColor={colors.muted}
             />
           </View>
 
-          <View className="mb-4">
-            <Text className="mb-1" style={{ color: "#fff" }}>
-              Description (optional)
-            </Text>
+          <View style={{ marginBottom: 16 }}>
+            <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 8 }}>Description (optional)</Text>
             <TextInput
-              style={{
-                backgroundColor: "#000",
-                color: "#fff",
-                borderRadius: 8,
-              }}
-              className="p-3 mt-1 mb-1"
+              style={{ ...inputStyle, minHeight: 80, textAlignVertical: "top" }}
               value={description}
               onChangeText={setDescription}
               placeholder="Enter task description"
-              placeholderTextColor="#888"
+              placeholderTextColor={colors.muted}
               multiline
             />
           </View>
 
-          <View className="mb-4">
-            <Text className="mb-1" style={{ color: "#fff" }}>
-              Due Date (optional)
-            </Text>
+          <View style={{ marginBottom: 20 }}>
+            <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 8 }}>Due Date (optional)</Text>
             <TouchableOpacity
-              style={{ backgroundColor: "#000", borderRadius: 8 }}
-              className="flex-row items-center p-3 mt-1"
+              style={{
+                ...inputStyle,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
               onPress={() => setShowDatePicker(true)}
             >
-              <Ionicons
-                name="calendar-outline"
-                color="#c1c1c1"
-                size={20}
-                style={{ marginRight: 8 }}
-              />
-              <Text
-                style={{ color: dueDate ? "#fff" : "#888" }}
-                className="flex-1"
-              >
-                {dueDate ? dueDate.toLocaleDateString() : "  Select due date"}
+              <Ionicons name="calendar-outline" color={colors.muted} size={18} style={{ marginRight: 10 }} />
+              <Text style={{ color: dueDate ? colors.text : colors.muted, flex: 1 }}>
+                {dueDate ? dueDate.toLocaleDateString() : "Select due date"}
               </Text>
             </TouchableOpacity>
             {showDatePicker && (
@@ -195,15 +178,19 @@ const TaskDialog: React.FC<TaskDialogProps> = ({
           </View>
 
           <TouchableOpacity
-            style={{ backgroundColor: "#fff", borderRadius: 8 }}
-            className="p-4 items-center mt-4"
+            style={{
+              backgroundColor: colors.warm,
+              padding: 16,
+              borderRadius: 12,
+              alignItems: "center",
+            }}
             onPress={handleSave}
             disabled={saving}
           >
             {saving ? (
-              <ActivityIndicator color="#000" />
+              <ActivityIndicator color={colors.text} />
             ) : (
-              <Text style={{ color: "#000", fontWeight: "bold" }}>
+              <Text style={{ color: colors.text, fontWeight: "600", fontSize: 16 }}>
                 {task ? "Update" : "Save"}
               </Text>
             )}

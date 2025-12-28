@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { FriendsTab } from "@/hooks/friends/useFriendsScreen";
+import { colors } from "@/utils/theme";
 
 interface FriendsTabsProps {
   activeTab: FriendsTab;
@@ -9,38 +10,37 @@ interface FriendsTabsProps {
   onChange: (tab: FriendsTab) => void;
 }
 
-const FriendsTabs = ({
-  activeTab,
-  friendCount,
-  requestCount,
-  onChange,
-}: FriendsTabsProps) => (
-  <View className="flex-row bg-secondary/10 rounded-lg p-1">
+const FriendsTabs = ({ activeTab, friendCount, requestCount, onChange }: FriendsTabsProps) => (
+  <View style={{ flexDirection: "row", gap: 8 }}>
     <TouchableOpacity
-      className={`flex-1 p-2 rounded ${
-        activeTab === "friends" ? "bg-primary" : ""
-      }`}
+      style={{
+        flex: 1,
+        paddingVertical: 14,
+        alignItems: "center",
+        borderRadius: 12,
+        backgroundColor: activeTab === "friends" ? colors.cool : colors.surface,
+        borderWidth: 1,
+        borderColor: activeTab === "friends" ? colors.cool : colors.surface2,
+      }}
       onPress={() => onChange("friends")}
     >
-      <Text
-        className={`text-center font-medium ${
-          activeTab === "friends" ? "text-white" : "text-secondary"
-        }`}
-      >
+      <Text style={{ color: colors.text, fontWeight: "600", fontSize: 14 }}>
         Friends ({friendCount})
       </Text>
     </TouchableOpacity>
     <TouchableOpacity
-      className={`flex-1 p-2 rounded ${
-        activeTab === "requests" ? "bg-primary" : ""
-      }`}
+      style={{
+        flex: 1,
+        paddingVertical: 14,
+        alignItems: "center",
+        borderRadius: 12,
+        backgroundColor: activeTab === "requests" ? colors.warm : colors.surface,
+        borderWidth: 1,
+        borderColor: activeTab === "requests" ? colors.warm : colors.surface2,
+      }}
       onPress={() => onChange("requests")}
     >
-      <Text
-        className={`text-center font-medium ${
-          activeTab === "requests" ? "text-white" : "text-secondary"
-        }`}
-      >
+      <Text style={{ color: colors.text, fontWeight: "600", fontSize: 14 }}>
         Requests ({requestCount})
       </Text>
     </TouchableOpacity>

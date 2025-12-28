@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { getDailyStatistics } from "@/services/statistics";
 import { useAuth } from "@/contexts/AuthContext";
+import { colors } from "@/utils/theme";
 
 const CurrentFocusTime = () => {
   const router = useRouter();
@@ -22,8 +23,6 @@ const CurrentFocusTime = () => {
         const stats = await getDailyStatistics(new Date());
         if (stats.length > 0) {
           setTodayStats(stats[0].totalFocusTime);
-
-          // Calculate weekly total
           const weeklyTotal = stats.reduce(
             (acc, curr) => acc + curr.totalFocusTime,
             0
@@ -41,33 +40,29 @@ const CurrentFocusTime = () => {
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
+    return hours + "h " + minutes + "m";
   };
 
   return (
-    <View className="flex gap-4">
-      <View className="flex flex-row gap-2 items-center justify-between">
-        <Text className="text-xl text-secondary">Current Focustime</Text>
+    <View style={{ gap: 16 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>Focus Time</Text>
         <TouchableOpacity
-          className="flex flex-row items-center justify-end gap-2"
-          onPress={() => router.push("/statistics/Statistics")}
+          style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
+          onPress={() => router.replace("/statistics/Statistics" as any)}
         >
-          <Text className="text-secondary">all Statistics</Text>
-          <Ionicons name="arrow-forward" color="#c1c1c1" size={20} />
+          <Text style={{ color: colors.muted, fontSize: 14 }}>All Statistics</Text>
+          <Ionicons name="arrow-forward" color={colors.muted} size={16} />
         </TouchableOpacity>
       </View>
-      <View className="flex flex-row gap-4">
-        <View className="flex-1 bg-primary/10 rounded-lg p-4">
-          <Text className="text-secondary/70 text-sm mb-1">Today</Text>
-          <Text className="text-secondary text-2xl font-bold">
-            {formatTime(todayStats)}
-          </Text>
+      <View style={{ flexDirection: "row", gap: 12 }}>
+        <View style={{ flex: 1, backgroundColor: colors.surface, borderRadius: 12, padding: 16, borderWidth: 1, borderColor: colors.surface2 }}>
+          <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 6 }}>Today</Text>
+          <Text style={{ color: colors.text, fontSize: 24, fontWeight: "700" }}>{formatTime(todayStats)}</Text>
         </View>
-        <View className="flex-1 bg-primary/10 rounded-lg p-4">
-          <Text className="text-secondary/70 text-sm mb-1">This week</Text>
-          <Text className="text-secondary text-2xl font-bold">
-            {formatTime(weeklyStats)}
-          </Text>
+        <View style={{ flex: 1, backgroundColor: colors.surface, borderRadius: 12, padding: 16, borderWidth: 1, borderColor: colors.surface2 }}>
+          <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 6 }}>This week</Text>
+          <Text style={{ color: colors.text, fontSize: 24, fontWeight: "700" }}>{formatTime(weeklyStats)}</Text>
         </View>
       </View>
     </View>

@@ -7,10 +7,11 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
-import { router, useLocalSearchParams, Stack } from "expo-router";
+import { useLocalSearchParams, Stack } from "expo-router";
 import { getDailyStatistics } from "@/services/statistics";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getFriends } from "@/services/friendship";
+import { colors } from "@/utils/theme";
 
 interface FriendProfileData {
   username: string;
@@ -38,64 +39,55 @@ const FriendProfile = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // First, get the friends list to find the correct friend ID
         const friends = await getFriends();
-        
-        // Find the friendship where either the user is the friend or the friend is the user
-        const friendship = friends.find(f => 
-          f.id === Number(id) || 
+
+        const friendship = friends.find(f =>
+          f.id === Number(id) ||
           (f.userId === id || f.friendId === id)
         );
-        
+
         if (!friendship) {
           throw new Error("Friendship not found");
         }
 
-        // Try both IDs from the friendship relationship
         let stats: any[] = [];
-        
-        // First try with friendId
-        console.log('Trying with friendId:', friendship.friendId);
+
+        console.log("Trying with friendId:", friendship.friendId);
         stats = await getDailyStatistics(undefined, friendship.friendId);
-        
-        // If no stats found, try with userId
+
         if (stats.length === 0) {
-          console.log('No stats found with friendId, trying with userId:', friendship.userId);
+          console.log("No stats found with friendId, trying with userId:", friendship.userId);
           stats = await getDailyStatistics(undefined, friendship.userId);
         }
-        
-        // Get the user data from the first stats entry (they all contain the same user info)
+
         const userData = stats[0] || { username: username as string, level: 1, xp: 0 };
-        
-        // Calculate today's focus time
+
         const today = new Date();
-        const todayStats = stats.find(stat => 
+        const todayStats = stats.find(stat =>
           new Date(stat.date).toDateString() === today.toDateString()
         );
         const todayFocusTime = todayStats?.totalFocusTime || 0;
 
-        // Calculate this week's focus time
         const weekStart = new Date();
-        weekStart.setDate(today.getDate() - today.getDay() + 1); // Start from Monday
-        const weekStats = stats.filter(stat => 
+        weekStart.setDate(today.getDate() - today.getDay() + 1);
+        const weekStats = stats.filter(stat =>
           new Date(stat.date) >= weekStart && new Date(stat.date) <= today
         );
         const weekFocusTime = weekStats.reduce((acc, curr) => acc + curr.totalFocusTime, 0);
 
-        // Calculate all-time focus time
         const allTimeFocusTime = stats.reduce((acc, curr) => acc + curr.totalFocusTime, 0);
-        
+
         setUser({
           username: userData.username || username as string || "Friend",
           level: userData.level || 1,
           xp: userData.xp || 0
         });
-        
+
         setStatistics({
           today: todayFocusTime,
           week: weekFocusTime,
           allTime: allTimeFocusTime,
-          completedTasks: 0 // This will be implemented when tasks are completed
+          completedTasks: 0
         });
       } catch (error) {
         console.error("Failed to load data:", error);
@@ -118,92 +110,160 @@ const FriendProfile = () => {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-black items-center justify-center">
-        <StatusBar barStyle="light-content" backgroundColor="black" />
-        <ActivityIndicator size="large" color="#FFD700" />
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, alignItems: "center", justifyContent: "center" }}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.bg} />
+        <ActivityIndicator size="large" color={colors.warm} />
       </SafeAreaView>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView className="flex-1 bg-black items-center justify-center">
-        <StatusBar barStyle="light-content" backgroundColor="black" />
-        <Text className="text-red-500">{error}</Text>
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, alignItems: "center", justifyContent: "center" }}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.bg} />
+        <Text style={{ color: colors.error }}>{error}</Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-black">
-      <StatusBar barStyle="light-content" backgroundColor="black" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.bg} />
       <Stack.Screen options={{ headerShown: false }} />
-      <ScrollView className="bg-black">
-        <View className="flex gap-10 px-4 py-4">
+      <ScrollView style={{ backgroundColor: colors.bg }}>
+        <View style={{ gap: 20, paddingHorizontal: 16, paddingVertical: 16 }}>
           <Header title="Friend Profile" icon="arrow-back" />
 
-          {/* Profile Section */}
-          <View className="bg-secondary/10 p-4 rounded-lg">
-            <View className="flex-row justify-between">
-              <View className="flex-row items-center">
-                <View className="h-20 w-20 rounded-full bg-secondary flex items-center justify-center">
-                  <Text className="text-primary text-2xl font-bold">
+          <View
+            style={{
+              backgroundColor: colors.surface,
+              padding: 20,
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: colors.surface2,
+            }}
+          >
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    height: 64,
+                    width: 64,
+                    borderRadius: 32,
+                    backgroundColor: colors.cool,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ color: colors.text, fontSize: 24, fontWeight: "700" }}>
                     {user?.username
                       ? user.username.charAt(0).toUpperCase()
                       : "U"}
                   </Text>
                 </View>
-                <View className="ml-4">
-                  <Text className="text-secondary text-xl font-bold">
+                <View style={{ marginLeft: 16 }}>
+                  <Text style={{ color: colors.text, fontSize: 20, fontWeight: "700" }}>
                     {user?.username || "Loading..."}
                   </Text>
                 </View>
               </View>
-              {/* Display Level and XP */}
               {user && (
-                <View className="flex flex-col justify-center">
-                  <Text className="text-secondary text-base font-bold">
-                    Level {user.level}
-                  </Text>
-                  <Text className="text-secondary text-base">{user.xp} XP</Text>
+                <View style={{ alignItems: "flex-end" }}>
+                  <View
+                    style={{
+                      backgroundColor: colors.warm,
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
+                      borderRadius: 8,
+                      marginBottom: 4,
+                    }}
+                  >
+                    <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>
+                      Level {user.level}
+                    </Text>
+                  </View>
+                  <Text style={{ color: colors.muted, fontSize: 14 }}>{user.xp} XP</Text>
                 </View>
               )}
             </View>
           </View>
 
-          {/* Statistics Section */}
-          <View className="bg-secondary/10 p-4 rounded-lg">
-            <Text className="text-secondary text-xl font-bold mb-4">
+          <View
+            style={{
+              backgroundColor: colors.surface,
+              padding: 20,
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: colors.surface2,
+            }}
+          >
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: "700", marginBottom: 16 }}>
               Focus Statistics
             </Text>
-            <View className="flex-row flex-wrap justify-between">
-              <View className="w-[48%] bg-primary/10 p-4 rounded-lg mb-4">
-                <Text className="text-secondary/70 text-sm">
-                  {"Today's Focus Time"}
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
+              <View
+                style={{
+                  width: "48%",
+                  backgroundColor: colors.bgAlt,
+                  padding: 16,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: colors.surface2,
+                }}
+              >
+                <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 6 }}>
+                  {"Todays Focus"}
                 </Text>
-                <Text className="text-secondary text-2xl font-bold">
+                <Text style={{ color: colors.warm, fontSize: 22, fontWeight: "700" }}>
                   {formatTime(statistics.today)}
                 </Text>
               </View>
-              <View className="w-[48%] bg-primary/10 p-4 rounded-lg mb-4">
-                <Text className="text-secondary/70 text-sm">This Week</Text>
-                <Text className="text-secondary text-2xl font-bold">
+              <View
+                style={{
+                  width: "48%",
+                  backgroundColor: colors.bgAlt,
+                  padding: 16,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: colors.surface2,
+                }}
+              >
+                <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 6 }}>This Week</Text>
+                <Text style={{ color: colors.cool, fontSize: 22, fontWeight: "700" }}>
                   {formatTime(statistics.week)}
                 </Text>
               </View>
-              <View className="w-[48%] bg-primary/10 p-4 rounded-lg mb-4">
-                <Text className="text-secondary/70 text-sm">
+              <View
+                style={{
+                  width: "48%",
+                  backgroundColor: colors.bgAlt,
+                  padding: 16,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: colors.surface2,
+                }}
+              >
+                <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 6 }}>
                   All Time Focus
                 </Text>
-                <Text className="text-secondary text-2xl font-bold">
+                <Text style={{ color: colors.text, fontSize: 22, fontWeight: "700" }}>
                   {formatTime(statistics.allTime)}
                 </Text>
               </View>
-              <View className="w-[48%] bg-primary/10 p-4 rounded-lg mb-4">
-                <Text className="text-secondary/70 text-sm">
+              <View
+                style={{
+                  width: "48%",
+                  backgroundColor: colors.bgAlt,
+                  padding: 16,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: colors.surface2,
+                }}
+              >
+                <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 6 }}>
                   Completed Tasks
                 </Text>
-                <Text className="text-secondary text-2xl font-bold">
+                <Text style={{ color: colors.success, fontSize: 22, fontWeight: "700" }}>
                   {statistics.completedTasks}
                 </Text>
               </View>
@@ -215,4 +275,4 @@ const FriendProfile = () => {
   );
 };
 
-export default FriendProfile; 
+export default FriendProfile;

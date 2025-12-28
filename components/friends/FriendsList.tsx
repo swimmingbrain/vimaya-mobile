@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import FriendItem from "@/components/FriendItem";
 import { Friendship } from "@/services/friendship";
+import { colors } from "@/utils/theme";
 
 interface FriendsListProps {
   friends: Friendship[];
@@ -9,19 +10,15 @@ interface FriendsListProps {
   isLoading: boolean;
 }
 
-const FriendsList = ({
-  friends,
-  onRemove,
-  isLoading,
-}: FriendsListProps) => (
+const FriendsList = ({ friends, onRemove, isLoading }: FriendsListProps) => (
   <View>
-    <Text className="text-secondary text-xl font-bold mb-4">
+    <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600", marginBottom: 16 }}>
       Your Friends
     </Text>
     {friends.length === 0 ? (
-      <Text className="text-secondary/70">
-        {`You don't have any friends yet.`}
-      </Text>
+      <View style={{ backgroundColor: colors.surface, padding: 20, borderRadius: 12, alignItems: "center" }}>
+        <Text style={{ color: colors.muted }}>You don't have any friends yet.</Text>
+      </View>
     ) : (
       friends.map((friend) => (
         <FriendItem

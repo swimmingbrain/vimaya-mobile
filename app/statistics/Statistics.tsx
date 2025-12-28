@@ -9,6 +9,7 @@ import WeekNavigator from "@/components/statistics/WeekNavigator";
 import WeeklyOverviewChart from "@/components/statistics/WeeklyOverviewChart";
 import { useStatisticsScreen } from "@/hooks/statistics/useStatisticsScreen";
 import { formatFocusTime } from "@/utils/time";
+import { colors } from "@/utils/theme";
 
 const Statistics = () => {
   const {
@@ -27,9 +28,9 @@ const Statistics = () => {
   }
 
   return (
-    <SafeAreaView className="bg-black h-full py-8">
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, paddingVertical: 16 }}>
       <ScrollView>
-        <View className="flex gap-10 px-4 py-4">
+        <View style={{ gap: 24, paddingHorizontal: 16, paddingVertical: 16 }}>
           <Header title="Statistics" icon="arrow-back" />
           <WeekNavigator range={weekRange} onNavigate={navigateWeek} />
           <WeeklyOverviewChart chartData={chartData} />

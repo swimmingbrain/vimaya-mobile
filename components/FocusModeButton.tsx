@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { colors } from "@/utils/theme";
 
 const FocusModeButton = () => {
   const router = useRouter();
@@ -13,10 +14,19 @@ const FocusModeButton = () => {
   return (
     <TouchableOpacity
       onPress={handlePress}
-      className="flex flex-row gap-2 items-center bg-secondary rounded-lg py-4 px-5"
+      style={{
+        backgroundColor: colors.warm,
+        borderRadius: 16,
+        paddingVertical: 18,
+        paddingHorizontal: 24,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 12,
+      }}
     >
-      <Ionicons name="locate-outline" color="#212121" size={24} />
-      <Text className="text-primary font-semibold">Start Focus Mode</Text>
+      <Ionicons name="locate-outline" color={colors.text} size={22} />
+      <Text style={{ color: colors.text, fontSize: 16, fontWeight: "600" }}>Start Focus Mode</Text>
     </TouchableOpacity>
   );
 };

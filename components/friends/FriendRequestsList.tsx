@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import FriendRequest from "@/components/FriendRequest";
 import { Friendship } from "@/services/friendship";
+import { colors } from "@/utils/theme";
 
 interface FriendRequestsListProps {
   requests: Friendship[];
@@ -10,20 +11,15 @@ interface FriendRequestsListProps {
   isLoading: boolean;
 }
 
-const FriendRequestsList = ({
-  requests,
-  onAccept,
-  onReject,
-  isLoading,
-}: FriendRequestsListProps) => (
+const FriendRequestsList = ({ requests, onAccept, onReject, isLoading }: FriendRequestsListProps) => (
   <View>
-    <Text className="text-secondary text-xl font-bold mb-4">
+    <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600", marginBottom: 16 }}>
       Friend Requests
     </Text>
     {requests.length === 0 ? (
-      <Text className="text-secondary/70">
-        {`You don't have any pending friend requests.`}
-      </Text>
+      <View style={{ backgroundColor: colors.surface, padding: 20, borderRadius: 12, alignItems: "center" }}>
+        <Text style={{ color: colors.muted }}>You don't have any pending friend requests.</Text>
+      </View>
     ) : (
       requests.map((request) => (
         <FriendRequest
