@@ -14,6 +14,11 @@ import { updateXP } from "@/services/profile";
 import { updateDailyStatistics } from "@/services/statistics";
 import { colors } from "@/utils/theme";
 import type { AppStateStatus } from "react-native";
+import FloatingFriends from "@/components/focus/FloatingFriends";
+import {
+  startFocusSession,
+  endFocusSession,
+} from "@/services/focusSession";
 
 const FOCUS_MODE_SCREEN_LOCK_THRESHOLD_MS = 100;
 
@@ -25,6 +30,7 @@ const FocusMode = () => {
   const [currentAppState, setCurrentAppState] = useState<AppStateStatus>(
     AppState.currentState
   );
+  const [sessionStarted, setSessionStarted] = useState(false);
 
   const timerIntervalRef = useRef<number | null>(null);
   const xpIntervalRef = useRef<number | null>(null);
@@ -34,6 +40,19 @@ const FocusMode = () => {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   const router = useRouter();
+
+  // Start focus session on mount
+  useEffect(() => {
+    const initSession = async () => {
+      try {
+        await startFocusSession();
+        setSessionStarted(true);
+      } catch (error) {
+        console.error("Error starting focus session:", error);
+      }
+    };
+    initSession();
+  }, []);
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
@@ -147,6 +166,13 @@ const FocusMode = () => {
     setIsRunning(false);
 
     try {
+      // End the focus session on the server
+      try {
+        await endFocusSession(timer);
+      } catch (error) {
+        console.error("Error ending focus session:", error);
+      }
+
       if (xp > 0) {
         await updateXP(xp);
       }
@@ -168,6 +194,9 @@ const FocusMode = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
+      {/* Floating Friends in Background */}
+      <FloatingFriends isActive={sessionStarted} />
+
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }}>
         <Text style={{ color: colors.muted, fontSize: 14, marginBottom: 8 }}>{getStatusText()}</Text>
 

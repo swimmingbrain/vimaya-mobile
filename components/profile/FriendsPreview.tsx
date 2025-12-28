@@ -57,8 +57,12 @@ const FriendsPreview = ({ friends, isLoading, error }: FriendsPreviewProps) => {
               }}
               onPress={() =>
                 router.push({
-                  pathname: "/friend/" + friend.friendId,
-                  params: { username: friend.friendUsername },
+                  pathname: "/friend/[id]",
+                  params: {
+                    id: String(friend.id),
+                    friendUserId: friend.friendId,
+                    username: friend.friendUsername
+                  },
                 })
               }
             >

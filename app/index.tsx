@@ -5,6 +5,8 @@ import TimeblockList from "@/components/TimeblockList";
 import FocusModeButton from "@/components/FocusModeButton";
 import CurrentFocusTime from "@/components/CurrentFocusTime";
 import TaskList from "@/components/TaskList";
+import LiveFriendsBar from "@/components/social/LiveFriendsBar";
+import ActivityFeed from "@/components/social/ActivityFeed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/utils/theme";
 
@@ -15,9 +17,11 @@ export default function Index() {
         <View style={{ gap: 24, paddingHorizontal: 16, paddingVertical: 16 }}>
           <Header title="Dashboard" icon="home-outline" />
           <FocusModeButton />
+          <LiveFriendsBar />
+          <TaskList />
           <TimeblockList />
           <CurrentFocusTime />
-          <TaskList />
+          <ActivityFeed />
         </View>
       </ScrollView>
     </SafeAreaView>
